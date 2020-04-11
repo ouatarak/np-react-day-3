@@ -6,7 +6,8 @@ interface IPersonProps {
 interface IPersonState {
     firstName: string,
     lastName: string,
-    age: number
+    age: number,
+    liked: boolean
 }
 
 
@@ -16,10 +17,11 @@ export default class Person extends React.Component<IPersonProps, IPersonState> 
         this.state = {
             firstName: "John",
             lastName: "Smith",
-            age: 45
+            age: 45,
+            liked: false
         } 
     }
-    updatePerson ( event: any ) {
+    updatePerson = ( event: any ) => {
         event.preventDefault();
 
         let firstNameString: string,
@@ -48,10 +50,19 @@ export default class Person extends React.Component<IPersonProps, IPersonState> 
         this.setState( {
             firstName: firstNameString,
             lastName: lastNameString,
-            age: ageNum
+            age: ageNum,
+            liked: this.state.liked
         } );
     }
-    render () {
+    toggleLike = () => {
+        this.setState( {
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+            age: this.state.age,
+            liked: !this.state.liked // Switch boolean to the opposite (!)
+        } );
+    }
+    liked = () => {
         return (
             <div>
                 <h2>{this.state.firstName} {this.state.lastName}</h2>
@@ -59,13 +70,48 @@ export default class Person extends React.Component<IPersonProps, IPersonState> 
                 <form onSubmit={this.updatePerson}>
                     <h3>Update Person</h3>
                     <label htmlFor="first-name">First Name:</label>
-                    <input type="text" name="first-name" value={this.state.firstName} />
+                    <input type="text" name="first-name" defaultValue={this.state.firstName} />
                     <label htmlFor="last-name">Last Name:</label>
-                    <input type="text" name="last-name" value={this.state.lastName} />
+                    <input type="text" name="last-name" defaultValue={this.state.lastName} />
                     <label htmlFor="age">Age:</label>
-                    <input type="number" name="gae" value={this.state.lastName} />
+                    <input type="number" name="age" defaultValue={this.state.age} />
+                    <input type="submit" value="Apply Updates" />
                 </form>
+                <button onClick={this.toggleLike}>
+                    <span role="img" aria-label="Thumbs Up">
+                    👍 You Like Them!
+                    (Click to Unlike)</span>
+                </button>
             </div>
-        )
+        );
+    }
+    unLiked = () => {
+        return (
+            <div>
+                <h2>{this.state.firstName} {this.state.lastName}</h2>
+                <p>They are {this.state.age} years old.</p>
+                <form onSubmit={this.updatePerson}>
+                    <h3>Update Person</h3>
+                    <label htmlFor="first-name">First Name:</label>
+                    <input type="text" name="first-name" defaultValue={this.state.firstName} />
+                    <label htmlFor="last-name">Last Name:</label>
+                    <input type="text" name="last-name" defaultValue={this.state.lastName} />
+                    <label htmlFor="age">Age:</label>
+                    <input type="number" name="age" defaultValue={this.state.age} />
+                    <input type="submit" value="Apply Updates" />
+                </form>
+                <button onClick={this.toggleLike}>
+                    <span role="img" aria-label="Thumbs Up">"👎"</span>
+                    👎 Like this Person?
+                    (Click to Like)
+                </button>
+            </div>
+        );
+    }
+    render () {
+        if ( this.state.liked )
+            return this.liked();
+        else
+            return this.unLiked();
     }
 }
